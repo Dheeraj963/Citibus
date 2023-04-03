@@ -153,9 +153,9 @@
       
       
       // Speech recognition API
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'en-US';
+      // const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      // const recognition = new SpeechRecognition();
+      // recognition.lang = 'en-US';
 
       // Get DOM elements
       const answerDiv = document.querySelector('#answer');
@@ -178,23 +178,23 @@
       });
 
       // Handle speech recognition
-      recognition.onresult = event => {
-        const resultIndex = event.resultIndex;
-        const transcript = event.results[resultIndex][0].transcript;
-        textInput.value = transcript;
+      // recognition.onresult = event => {
+      //   const resultIndex = event.resultIndex;
+      //   const transcript = event.results[resultIndex][0].transcript;
+      //   textInput.value = transcript;
         
-        var trim_script = transcript.split(" ");
-        trim_script = trim_script.filter(f => !stopwords.includes(f));
-        var queryQues = a.get(trim_script.join(" "), null, 0.5);
-        console.log(queryQues);
-        getAnswer(queryQues);
-      };
+      //   var trim_script = transcript.split(" ");
+      //   trim_script = trim_script.filter(f => !stopwords.includes(f));
+      //   var queryQues = a.get(trim_script.join(" "), null, 0.5);
+      //   console.log(queryQues);
+      //   getAnswer(queryQues);
+      // };
 
-      // Handle click on voice input button     
-      function startSpeechRecognition() {
-        recognition.start();
-      }
-      voiceBtn.addEventListener('click', startSpeechRecognition);
+      // // Handle click on voice input button     
+      // function startSpeechRecognition() {
+      //   recognition.start();
+      // }
+      // voiceBtn.addEventListener('click', startSpeechRecognition);
 
 
       function getAnswer(question) {
