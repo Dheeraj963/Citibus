@@ -2,15 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Simple ASP Website</title>
+    <title>CitiBus</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://www.aa.com/jquery.js"></script>
-    
     <script src="fuzzyset.js"></script>
-
+    <script src="fuzzyset.js"></script>
+    <script type="text/javascript" src="script_page.js"></script> 
     <style>
       #voice-input-btn {
         background-color: #4CAF50;
@@ -27,13 +26,19 @@
       }
 
       #answer-box {
-        border: 1px solid black;
+        border: 1px solid transparent;
         padding: 10px;
         margin-top: 10px;
         display: block;
+        background-color: white;
+        display: none;
       }
 
-     .image{
+      #answer{
+        width: 30%;
+        height: 30%;
+      }
+     .image-heading{
         
     display: flex;
     align-items: center;
@@ -42,24 +47,67 @@
     justify-content: center;
 
      } 
-    
+     .image{
+      display: flex;
+    align-items: center;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
 
+      width:30%;
+     }
+    
+     #bgVideo{
+      width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+     }
+     #submit-btn{
+      color: White;
+      padding-top: 3%;
+      padding-left: 35%;
+     }
     </style>
   </head>
   <body>
-    <div class="image">
-      <img src="https://is2-ssl.mzstatic.com/image/thumb/Purple126/v4/10/5a/8c/105a8cbb-2b06-8c6d-ab4f-614c77c606e6/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/1200x600wa.png" width = '700' height = '300'>
+    <div class="image-heading">
+      <img src="https://bind.imgix.net/uploads/1e653bce1d9a6192b31287915237ec48e0b780a1.svg?auto=format" style="align-content: center;"
+       width = '700' height = '300'>
       <div>
-        <p>search with bus number to know about the stop details</p>
+        <!-- <p>search with bus number to know about the stop details</p> -->
       </div>
     </div>
-    
-    <div id="answer"></div>
-    <button id="voice-input-btn"><i class="fa fa-microphone"></i></button>
-    <input type="text" id="text-input" placeholder="Type your question...">
-    <button id="submit-btn">Submit</button>
-    <div id="answer-box"></div>
+    <div style="display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;">
+      <div class="image">
+        <img src="https://scontent-dfw5-1.xx.fbcdn.net/v/t39.30808-6/342988148_1251728625717440_2204390105379898784_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=730e14&_nc_ohc=iYF6XQpoD74AX_oOg6r&_nc_ht=scontent-dfw5-1.xx&oh=00_AfCwZw69b_ot_uRrsylLpjS4P02FT4Fab6tyuGszT9_04w&oe=644BB4B5" width="100%" height="100%">
+      </div>
 
+      <div style=" margin-right: 10%;">
+        <!-- <div id="answer"></div> -->
+        <input type="text" id="text-input" placeholder="Type your question...">
+        <button id="voice-input-btn"><i class="fa fa-microphone"></i></button> <br>
+        <button id="submit-btn">Submit</button>
+        <div id="answer-box"></div>
+      </div>
+      <!-- <div class="image">
+        <img src="https://bind.imgix.net/uploads/36a23406ed056fff492f04717e89e50ecccb8f8d.jpeg?auto=format?&w=1600&h=800&q=75" width="100%" height="100%">
+      </div> -->
+    </div>  
+    
+     <video id="bgVideo" src="https://ci.lubbock.tx.us/storage/images/zCvwQn72Zgt51TkyfWAU5YWI9SwDaWzTK9M5MPp7.mp4" poster="/images/hero-bg.jpg" autoplay="autoplay" loop="loop" playsinline="" muted="muted"></video> 
+     
+    <footer style="position: absolute; width: 100%; left: 0; top:75%">
+      <img src="https://scontent-dfw5-2.xx.fbcdn.net/v/t39.30808-6/336058897_605903221456760_4706169015341949739_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=730e14&_nc_ohc=QirW5R-8RUEAX_igPXl&_nc_ht=scontent-dfw5-2.xx&oh=00_AfCRgn5Ukkx2kgZwpNb0ohhLhKLPBOHLuqnp5DkSIqX2tQ&oe=644B4822" height="10%" width="100%">
+    </footer>
+        
     <script>
       
       var isClose=true;
@@ -153,9 +201,9 @@
       
       
       // Speech recognition API
-      // const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      // const recognition = new SpeechRecognition();
-      // recognition.lang = 'en-US';
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
 
       // Get DOM elements
       const answerDiv = document.querySelector('#answer');
@@ -174,27 +222,28 @@
         trim_script = trim_script.filter(f => !stopwords.includes(f));
         var queryQues = a.get(trim_script.join(" "), null, 0.5); 
         getAnswer(queryQues);
-        
+        answerBox.style.display = 'block';
       });
 
       // Handle speech recognition
-      // recognition.onresult = event => {
-      //   const resultIndex = event.resultIndex;
-      //   const transcript = event.results[resultIndex][0].transcript;
-      //   textInput.value = transcript;
+       recognition.onresult = event => {
+       const resultIndex = event.resultIndex;
+       const transcript = event.results[resultIndex][0].transcript;
+        textInput.value = transcript;
         
-      //   var trim_script = transcript.split(" ");
-      //   trim_script = trim_script.filter(f => !stopwords.includes(f));
-      //   var queryQues = a.get(trim_script.join(" "), null, 0.5);
-      //   console.log(queryQues);
-      //   getAnswer(queryQues);
-      // };
+        var trim_script = transcript.split(" ");
+        trim_script = trim_script.filter(f => !stopwords.includes(f));
+        var queryQues = a.get(trim_script.join(" "), null, 0.5);
+        console.log(queryQues);
+        getAnswer(queryQues);
+      
+      };
 
       // // Handle click on voice input button     
-      // function startSpeechRecognition() {
-      //   recognition.start();
-      // }
-      // voiceBtn.addEventListener('click', startSpeechRecognition);
+      function startSpeechRecognition() {
+       recognition.start();
+       }
+      voiceBtn.addEventListener('click', startSpeechRecognition);
 
 
       function getAnswer(question) {
@@ -235,7 +284,7 @@
           success: function(response) {
             console.log(response);
              const answer = response || 'Sorry, I could not find an answer.';
-             answerDiv.innerHTML = answer;
+            //  answerDiv.innerHTML = answer;
              answerBox.innerHTML = answer;
           },
           error: function(xhr, status, error) {
